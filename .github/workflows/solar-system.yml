@@ -37,6 +37,7 @@ jobs:
           run: npm test
           
         - name: Archive Test Result
+          always()
           uses: actions/upload-artifact@v3
           with:
             name: Mocha-Test-Result
