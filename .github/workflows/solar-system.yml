@@ -112,6 +112,30 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME}}/solar-system:${{ github.sha}}
 
+    deploy-to-dev:
+      - name: Deploy to Dev
+        needs: [docker-build-image]
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout Repository
+          uses: actions/checkout@v4  
+        - name: Install Kubectl CLI
+          uses: azure/setup-kubectl@v3 
+          with:
+            version: 'v1.26.0'     
+        - name: Set KUBECONFIG
+          uses: azure/k8s-set-context@v4
+          with:
+            method: kubeconfig
+            kubeconfig: ${{ secrets.KUBECONFIG}} # current-context from kubeconfig is used as default
+        - name: Get Cluster Information
+          runs: |
+            kubectl version --short
+
+       
+
+
+
 
     
     
