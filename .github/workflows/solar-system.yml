@@ -73,12 +73,31 @@ jobs:
             path: coverage
             retention-days: 5
 
-        - name: Login to Docker Hub
-          uses: docker/login-action@v3
-          with:
-            username: ${{ secrets.DOCKERHUB_USERNAME }}
-            password: ${{ secrets.DOCKERHUB_TOKEN }}
-    
+    build-docker-image:
+      name: Docker Build
+      runs-on: ubuntu-latest
+      steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build Image
+        uses: docker/build-push@v4
+        with:
+          context: .
+          push: false
+          tags: ${{ vars.DOCKERHUB_USERNAME}}/solar-system:${{ github.sha}}
+      - name: Docker Image Testing
+        run: |
+          docker images
+          docker run --name solar-system-app -d \
+          -p 3000:3000 \
+          -e MONGO URI=$MONGO_URI \
+          -e MONGO USERNAME-$MONGO_USERNAME \
+          -e MONGO PASSWORD-$MONGO_PASSWORD \
+          ${{ env.DOCKERHUB_USERNAME }}/solar-system:$(( github.sha }}
+
 
     
     
