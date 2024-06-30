@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - 'feature/*'
 env:
   MONGO_URI: 'mongodb+srv://supercluster.d83jj.mongodb.net/superData'
   MONGO_USERNAME: ${{ vars.MONGO_USERNAME}}
@@ -72,7 +71,13 @@ jobs:
           with:
             name: Code-Coverage-Result
             path: coverage
-            retentino-days: 5
+            retention-days: 5
+
+        - name: Login to Docker Hub
+          uses: docker/login-action@v3
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
     
 
     
