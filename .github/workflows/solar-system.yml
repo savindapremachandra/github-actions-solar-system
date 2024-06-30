@@ -129,7 +129,7 @@ jobs:
           kubeconfig: ${{ secrets.KUBECONFIG}} # current-context from kubeconfig is used as default
       - name: Get Cluster Information
         run: |
-          kubectl version --short
+          kubectl version
 
        
 
