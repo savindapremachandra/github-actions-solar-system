@@ -111,7 +111,6 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME}}/solar-system:${{ github.sha}}
-
     deploy-to-dev:
       name: Deploy to Dev
       needs: [build-docker-image]
@@ -129,7 +128,7 @@ jobs:
           method: kubeconfig
           kubeconfig: ${{ secrets.KUBECONFIG}} # current-context from kubeconfig is used as default
       - name: Get Cluster Information
-        runs: |
+        run: |
           kubectl version --short
 
        
