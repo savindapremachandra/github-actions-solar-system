@@ -113,7 +113,7 @@ jobs:
           tags: ${{ secrets.DOCKERHUB_USERNAME}}/solar-system:${{ github.sha}}
 
     deploy-to-dev:
-      - name: Deploy to Dev
+        name: Deploy to Dev
         needs: [docker-build-image]
         runs-on: ubuntu-latest
         steps:
