@@ -114,7 +114,7 @@ jobs:
 
     deploy-to-dev:
       name: Deploy to Dev
-      needs: [docker-build-image]
+      needs: [build-docker-image]
       runs-on: ubuntu-latest
       steps:
       - name: Checkout Repository
