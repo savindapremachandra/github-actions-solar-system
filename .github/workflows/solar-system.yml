@@ -154,7 +154,7 @@ jobs:
           -o yaml  | kubectl apply -f - 
       - name: Deploy to DEV
         run: |
-          kubectl apply -f kubernetes/development
+          kubectl apply --insecure-skip-tls-verify -f kubernetes/development 
 
       
 
