@@ -144,7 +144,7 @@ jobs:
           IMAGE: ${{ secrets.DOCKERHUB_USERNAME}}/solar-system:${{ github.sha}}
       - name: Create Secret
         run: |
-          kubectl -n ${{ vars.NAMESPACE )} create secret generic mongo-db-creds \
+          kubectl -n ${{ vars.NAMESPACE }} create secret generic mongo-db-creds \
           --insecure-skip-tls-verify \
           --from-literal=MONGO_URI=${{ env.MONGO_URI }} \
           --from-literal=MONGO_USERNAME=${{ vars.MONGO_USERNAME }} \
