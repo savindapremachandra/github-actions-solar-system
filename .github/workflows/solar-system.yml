@@ -142,7 +142,6 @@ jobs:
             NAMESPACE: ${{ vars.NAMESPACE}}
             REPLICAS: ${{ vars.REPLICAS}}
             IMAGE: ${{ secrets.DOCKERHUB_USERNAME}}/solar-system:${{ github.sha}}
-            INGRESS_IP: 
       
 
       
