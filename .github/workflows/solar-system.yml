@@ -132,16 +132,16 @@ jobs:
           kubectl version --insecure-skip-tls-verify
           echo ------------------------------------
           kubectl get nodes --insecure-skip-tls-verify
-      # - name: Replace Place Holders in Manifests
-      #   - uses: cschleiden/replace-tokens@v1
-      #     with:
-      #       tokenPrefix: '_{'
-      #       tokenSuffix: '}_'
-      #       files: '["kubernetes/development/*.yaml"]'
-      #     env:
-      #       NAMESPACE: ${{ vars.NAMESPACE}}
-      #       REPLICAS: ${{ vars.REPLICAS}}
-      #       IMAGE: ${{ secrets.DOCKERHUB_USERNAME}}/solar-system:${{ github.sha}}
+      - name: Replace Place Holders in Manifests
+          uses: cschleiden/replace-tokens@v1
+          with:
+            tokenPrefix: '_{'
+            tokenSuffix: '}_'
+            files: '["kubernetes/development/*.yaml"]'
+          env:
+            NAMESPACE: ${{ vars.NAMESPACE}}
+            REPLICAS: ${{ vars.REPLICAS}}
+            IMAGE: ${{ secrets.DOCKERHUB_USERNAME}}/solar-system:${{ github.sha}}
       
 
       
