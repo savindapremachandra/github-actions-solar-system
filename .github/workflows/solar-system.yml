@@ -11,106 +11,121 @@ env:
   MONGO_PASSWORD: ${{ secrets.MONGO_PASSWORD}}
     
 jobs:
-    unit-testing:
-        name: Unit Testing
-        runs-on: [self-hosted]
-        steps:
-        - name: Checkout Repository
-          uses: actions/checkout@v4
+    # unit-testing:
+    #     name: Unit Testing
+    #     runs-on: [self-hosted]
+    #     steps:
+    #     - name: Checkout Repository
+    #       uses: actions/checkout@v4
 
-        - name: Setup NodeJS Version
-          uses: actions/setup-node@v3
-          with:
-            node-version: 20
+    #     - name: Setup NodeJS Version
+    #       uses: actions/setup-node@v3
+    #       with:
+    #         node-version: 20
         
-        - name: Cache NPM dependencies
-          id: cache-primes
-          uses: actions/cache@v3
-          with:
-            path: ~/.npm
-            key: '${{ runner.os }}-node-modules-${{ hashFiles(''package-lock.json'') }}'
-        - name: Install Dependencies
-          run: npm install
+    #     - name: Cache NPM dependencies
+    #       id: cache-primes
+    #       uses: actions/cache@v3
+    #       with:
+    #         path: ~/.npm
+    #         key: '${{ runner.os }}-node-modules-${{ hashFiles(''package-lock.json'') }}'
+    #     - name: Install Dependencies
+    #       run: npm install
     
-        - name: Unit Testing
-          run: npm test
+    #     - name: Unit Testing
+    #       run: npm test
           
-        - name: Archive Test Result
-          if: ${{ always() }}
-          uses: actions/upload-artifact@v3
-          with:
-            name: Mocha-Test-Result
-            path: test-results.xml
-    code-coverage:
-        name: Code Coverage
-        runs-on: [self-hosted]
-        steps:
-        - name: Checkout Repository
-          uses: actions/checkout@v4
+    #     - name: Archive Test Result
+    #       if: ${{ always() }}
+    #       uses: actions/upload-artifact@v3
+    #       with:
+    #         name: Mocha-Test-Result
+    #         path: test-results.xml
+    # code-coverage:
+    #     name: Code Coverage
+    #     runs-on: [self-hosted]
+    #     steps:
+    #     - name: Checkout Repository
+    #       uses: actions/checkout@v4
 
-        - name: Setup NodeJS Version
-          uses: actions/setup-node@v3
-          with:
-            node-version: 20
+    #     - name: Setup NodeJS Version
+    #       uses: actions/setup-node@v3
+    #       with:
+    #         node-version: 20
         
-        - name: Cache NPM dependencies
-          id: cache-primes
-          uses: actions/cache@v3
-          with:
-            path: ~/.npm
-            key: '${{ runner.os }}-node-modules-${{ hashFiles(''package-lock.json'') }}'
-        - name: Install Dependencies
-          run: npm install
+    #     - name: Cache NPM dependencies
+    #       id: cache-primes
+    #       uses: actions/cache@v3
+    #       with:
+    #         path: ~/.npm
+    #         key: '${{ runner.os }}-node-modules-${{ hashFiles(''package-lock.json'') }}'
+    #     - name: Install Dependencies
+    #       run: npm install
     
-        - name: Unit Testing
-          run: npm test
+    #     - name: Unit Testing
+    #       run: npm test
           
-        - name: Archive Test Result
-          if: ${{ always() }}
-          uses: actions/upload-artifact@v3
-          with:
-            name: Code-Coverage-Result
-            path: coverage
-            retention-days: 5
+    #     - name: Archive Test Result
+    #       if: ${{ always() }}
+    #       uses: actions/upload-artifact@v3
+    #       with:
+    #         name: Code-Coverage-Result
+    #         path: coverage
+    #         retention-days: 5
 
-    build-docker-image:
-      name: Docker Build
-      needs: [unit-testing,code-coverage]
-      runs-on: [self-hosted]
-      steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build Image
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: false
-          tags: ${{ secrets.DOCKERHUB_USERNAME}}/solar-system:${{ github.sha}}
-      - name: Docker Image Testing
-        run: |
-          docker images
-          docker run --name solar-system-app -d \
-              -p 3000:3000 \
-              -e MONGO_URI=$MONGO_URI \
-              -e MONGO_USERNAME-$MONGO_USERNAME \
-              -e MONGO_PASSWORD-$MONGO_PASSWORD \
-              ${{ secrets.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
+    # build-docker-image:
+    #   name: Docker Build
+    #   needs: [unit-testing,code-coverage]
+    #   runs-on: [self-hosted]
+    #   steps:
+    #   - name: Checkout Repository
+    #     uses: actions/checkout@v4
+    #   - name: Login to Docker Hub
+    #     uses: docker/login-action@v3
+    #     with:
+    #       username: ${{ secrets.DOCKERHUB_USERNAME }}
+    #       password: ${{ secrets.DOCKERHUB_TOKEN }}
+    #   - name: Build Image
+    #     uses: docker/build-push-action@v4
+    #     with:
+    #       context: .
+    #       push: false
+    #       tags: ${{ secrets.DOCKERHUB_USERNAME}}/solar-system:${{ github.sha}}
+    #   - name: Docker Image Testing
+    #     run: |
+    #       docker images
+    #       docker run --name solar-system-app -d \
+    #           -p 3000:3000 \
+    #           -e MONGO_URI=$MONGO_URI \
+    #           -e MONGO_USERNAME-$MONGO_USERNAME \
+    #           -e MONGO_PASSWORD-$MONGO_PASSWORD \
+    #           ${{ secrets.DOCKERHUB_USERNAME }}/solar-system:${{ github.sha }}
 
-          export IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}){{end}}' solar-system-app)
-          echo $IP
-          echo Testing Image URL using wget 
-          wget -q -O - 127.0.0.1:3000/live | grep live
-      - name: Push Image to the Repository
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME}}/solar-system:${{ github.sha}}
+    #       export IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}){{end}}' solar-system-app)
+    #       echo $IP
+    #       echo Testing Image URL using wget 
+    #       wget -q -O - 127.0.0.1:3000/live | grep live
+    #   - name: Push Image to the Repository
+    #     uses: docker/build-push-action@v4
+    #     with:
+    #       context: .
+    #       push: true
+    #       tags: ${{ secrets.DOCKERHUB_USERNAME}}/solar-system:${{ github.sha}}
+    deploy-to-dev:
+       name: Deploy to Dev
+       runs-on: ubuntu-latest
+       steps:
+       - name: Set the Kubernetes context
+         uses: azure/k8s-set-context@v2
+         with:
+          method: service-account
+          k8s-url: ec2-54-166-219-77.compute-1.amazonaws.com
+          k8s-secret: ${{ secrets.KUBE }}
+       - name: Get Cluster Information
+         run: |
+          kubectl version --insecure-skip-tls-verify
+          echo ------------------------------------
+          kubectl get nodes --insecure-skip-tls-verify       
     # deploy-to-dev:
     #   name: Deploy to Dev
     #   needs: [build-docker-image]
