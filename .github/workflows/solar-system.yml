@@ -126,7 +126,7 @@ jobs:
           kubectl version --insecure-skip-tls-verify
           echo ------------------------------------
           kubectl get nodes --insecure-skip-tls-verify       
-    # deploy-to-dev:
+    ## deploy-to-dev:
     #   name: Deploy to Dev
     #   needs: [build-docker-image]
     #   runs-on: ubuntu-latest
